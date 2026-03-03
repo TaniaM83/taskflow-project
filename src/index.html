@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <header>
+        <h1>TaskFlow</h1>
+        <p class="header-subtitle">Organiza tus tareas de forma simple</p>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar-left">
+            <section class="form-section">
+                <h2>Agregar Tarea</h2>
+                <form id="task-form">
+                    <input type="text" id="task-name" placeholder="Nombre de la tarea" required>
+                    <div class="date-group">
+                        <label for="start-date">Inicio</label>
+                        <input type="date" id="start-date" required>
+                    </div>
+                    <div class="date-group">
+                        <label for="end-date">Fin</label>
+                        <input type="date" id="end-date" required>
+                    </div>
+                    <button type="submit">Agregar</button>
+                </form>
+            </section>
+        </aside>
+
+        <main>
+            <section class="tasks-section">
+                <h2>Mis Tareas</h2>
+                <div class="tasks-filters">
+                    <button class="filter-btn active" data-filter="all">Todas</button>
+                    <button class="filter-btn" data-filter="pendiente">Pendientes</button>
+                    <button class="filter-btn" data-filter="en-proceso">En proceso</button>
+                    <button class="filter-btn" data-filter="terminada">Terminadas</button>
+                </div>
+                <div id="tasks-list" class="tasks-list">
+                    <p class="empty-message">No hay tareas. Agrega una desde el formulario.</p>
+                </div>
+            </section>
+
+            <section class="calendar-section">
+                <h2>Calendario</h2>
+                <div class="calendario-container">
+                    <div class="calendario-header">
+                        <button id="prev-month" class="nav-btn">&lt;</button>
+                        <div class="calendario-title">
+                            <span id="month-name">Marzo</span>
+                            <span id="year-number">2026</span>
+                        </div>
+                        <button id="next-month" class="nav-btn">&gt;</button>
+                    </div>
+                    <div class="calendario-grid" id="calendario-grid">
+                        <span class="day-name">Lun</span>
+                        <span class="day-name">Mar</span>
+                        <span class="day-name">Mié</span>
+                        <span class="day-name">Jue</span>
+                        <span class="day-name">Vie</span>
+                        <span class="day-name">Sáb</span>
+                        <span class="day-name">Dom</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

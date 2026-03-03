@@ -1,0 +1,486 @@
+:root {
+    --primary-color: #8aad48;
+    --primary-dark: #729438;
+    --secondary-color: #455434;
+    --bg-color: #3d4a2a;
+    --card-bg: #4e5d36;
+    --text-color: #ffffff;
+    --text-light: #c8d4b0;
+    --border-color: #5a6b40;
+
+    --estado-pendiente: #e74c3c;
+    --estado-en-proceso: #f39c12;
+    --estado-terminada: #2ecc71;
+
+    --calendar-task: #8aad48;
+    --calendar-range: #5a6b40;
+    --day-hover: #5a6b40;
+
+    --font-family: 'Segoe UI', 'Arial', sans-serif;
+
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    --border-radius: 8px;
+    --border-radius-sm: 4px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+}
+
+header {
+    background-color: #2e3820;
+    color: white;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    text-align: center;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.header-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.85;
+    margin-top: var(--spacing-xs);
+}
+
+.container {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.sidebar-left {
+    background-color: var(--card-bg);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    flex-shrink: 0;
+    width: 280px;
+}
+
+.sidebar-left h2 {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--primary-color);
+}
+
+.form-section form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.form-section input[type="text"],
+.form-section input[type="date"] {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    font-family: var(--font-family);
+    font-size: 0.9rem;
+    transition: border-color 0.3s;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+.form-section input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.date-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.date-group label {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.form-section button[type="submit"] {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: var(--spacing-sm);
+}
+
+.form-section button[type="submit"]:hover {
+    background-color: var(--primary-dark);
+}
+
+main {
+    flex: 1;
+    background-color: var(--card-bg);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    min-width: 0;
+}
+
+main h2 {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--primary-color);
+}
+
+.tasks-filters {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: var(--spacing-xs) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    background: var(--secondary-color);
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-family: var(--font-family);
+    transition: all 0.3s;
+}
+
+.filter-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.filter-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.empty-message {
+    text-align: center;
+    color: var(--text-light);
+    padding: var(--spacing-xl);
+    font-size: 0.9rem;
+}
+
+.task-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--estado-pendiente);
+    background-color: var(--secondary-color);
+    transition: all 0.3s ease;
+}
+
+.task-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.task-card.en-proceso {
+    border-left-color: var(--estado-en-proceso);
+}
+
+.task-card.terminada {
+    border-left-color: var(--estado-terminada);
+    opacity: 0.75;
+}
+
+.task-card.terminada .task-name {
+    text-decoration: line-through;
+    color: var(--text-light);
+}
+
+.task-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    flex: 1;
+    min-width: 0;
+}
+
+.task-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+}
+
+.task-dates {
+    font-size: 0.75rem;
+    color: var(--text-light);
+}
+
+.task-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
+}
+
+.status-badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.status-badge:hover {
+    transform: scale(1.05);
+}
+
+.status-badge.pendiente {
+    background-color: var(--estado-pendiente);
+}
+
+.status-badge.en-proceso {
+    background-color: var(--estado-en-proceso);
+}
+
+.status-badge.terminada {
+    background-color: var(--estado-terminada);
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: var(--spacing-xs);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: var(--estado-pendiente);
+    color: white;
+}
+
+.calendar-section {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+}
+
+.calendar-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--primary-color);
+}
+
+.calendario-container {
+    margin-top: var(--spacing-sm);
+}
+
+.calendario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.calendario-title {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.calendario-title #month-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.calendario-title #year-number {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.calendar-section {
+    border-top-color: var(--border-color);
+}
+
+.nav-btn {
+    background: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    color: var(--text-color);
+}
+
+.nav-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.calendario-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.day-name {
+    font-weight: 600;
+    text-align: center;
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    padding: var(--spacing-sm);
+}
+
+.day {
+    padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-md);
+    text-align: center;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.9rem;
+    cursor: default;
+    transition: background-color 0.3s;
+    position: relative;
+}
+
+.day:hover:not(.day-disabled) {
+    background-color: var(--day-hover);
+}
+
+.day-disabled {
+    color: #6b7c52;
+}
+
+.day.today {
+    background-color: #5a6b40;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.day .task-dots {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    right: 0;
+}
+
+.day .task-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.task-dot.dot-pendiente {
+    background-color: var(--estado-pendiente);
+}
+
+.task-dot.dot-en-proceso {
+    background-color: var(--estado-en-proceso);
+}
+
+.task-dot.dot-terminada {
+    background-color: #5ef0a0;
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: var(--spacing-md);
+    }
+
+    header h1 {
+        font-size: 1.4rem;
+    }
+
+    .container {
+        flex-direction: column;
+        padding: var(--spacing-sm);
+        gap: var(--spacing-sm);
+    }
+
+    .sidebar-left {
+        width: 100%;
+    }
+
+    .form-section form {
+        flex-direction: column;
+    }
+
+    .task-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+
+    .task-actions {
+        align-self: flex-end;
+    }
+
+    .tasks-filters {
+        gap: var(--spacing-xs);
+    }
+
+    .filter-btn {
+        font-size: 0.75rem;
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    .calendario-grid {
+        gap: 1px;
+    }
+
+    .day {
+        padding: var(--spacing-xs);
+        font-size: 0.7rem;
+    }
+
+    .day-name {
+        font-size: 0.65rem;
+    }
+}
