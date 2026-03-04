@@ -476,8 +476,13 @@ main h2 {
     }
 
     .day {
-        padding: var(--spacing-xs);
+        padding: var(--spacing-xs) var(--spacing-xs) var(--spacing-sm);
         font-size: 0.7rem;
+    }
+
+    .day .task-dot {
+        width: 5px;
+        height: 5px;
     }
 
     .day-name {

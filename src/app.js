@@ -1,4 +1,9 @@
-var tareas = [];
+var tareasGuardadas = localStorage.getItem('tareas');
+var tareas = tareasGuardadas ? JSON.parse(tareasGuardadas) : [];
+
+function guardarTareas() {
+    localStorage.setItem('tareas', JSON.stringify(tareas));
+}
 var mesActual = new Date().getMonth();
 var anioActual = new Date().getFullYear();
 var filtro = 'all';
@@ -107,6 +112,7 @@ document.getElementById('tasks-list').addEventListener('click', function(e) {
         if (tarea) {
             var idx = estados.indexOf(tarea.estado);
             tarea.estado = estados[(idx + 1) % 3];
+            guardarTareas();
             renderTareas();
             renderCalendario();
         }
@@ -115,6 +121,7 @@ document.getElementById('tasks-list').addEventListener('click', function(e) {
     if (e.target.classList.contains('delete-btn')) {
         var id = Number(e.target.dataset.id);
         tareas = tareas.filter(function(t) { return t.id !== id; });
+        guardarTareas();
         renderTareas();
         renderCalendario();
     }
@@ -133,6 +140,7 @@ document.getElementById('task-form').addEventListener('submit', function(e) {
     }
 
     tareas.push({ id: Date.now(), nombre: nombre, inicio: inicio, fin: fin, estado: 'pendiente' });
+    guardarTareas();
     renderTareas();
     renderCalendario();
     this.reset();
