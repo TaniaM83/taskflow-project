@@ -1,60 +1,71 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskFlow</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
-<body>
-    <header>
-        <h1>TaskFlow</h1>
-        <p class="header-subtitle">Organiza tus tareas de forma simple</p>
+<body class="bg-olive-50 dark:bg-olive-900 text-gray-800 dark:text-white min-h-screen font-sans transition-colors duration-300">
+
+    <header class="bg-olive-400 dark:bg-olive-950 text-white p-6 text-center relative">
+        <div class="flex justify-center items-center">
+            <h1 class="text-3xl font-bold">TaskFlow</h1>
+            <button id="theme-toggle" class="absolute right-6 text-2xl cursor-pointer transition-transform duration-300 hover:scale-110 focus:outline-none" title="Cambiar tema">🌕</button>
+        </div>
+        <p class="text-sm opacity-85 mt-1">Organiza tus tareas de forma simple</p>
     </header>
 
-    <div class="container">
-        <aside class="sidebar-left">
-            <section class="form-section">
-                <h2>Agregar Tarea</h2>
-                <form id="task-form">
-                    <input type="text" id="task-name" placeholder="Nombre de la tarea" required>
-                    <div class="date-group">
-                        <label for="start-date">Inicio</label>
-                        <input type="date" id="start-date" required>
+    <div class="flex gap-4 p-6 max-w-7xl mx-auto max-md:flex-col max-md:p-2 max-md:gap-2">
+
+        <aside class="w-72 max-md:w-full bg-olive-100 dark:bg-olive-700 p-6 rounded-lg shrink-0 transition-colors duration-300">
+            <section>
+                <h2 class="text-lg mb-4 text-olive-500 dark:text-olive-400 font-semibold">Agregar Tarea</h2>
+                <form id="task-form" class="flex flex-col gap-2">
+                    <input type="text" id="task-name" placeholder="Nombre de la tarea" required
+                        class="w-full px-4 py-2 border border-olive-300 dark:border-olive-600 rounded bg-olive-50 dark:bg-olive-800 text-gray-800 dark:text-white text-sm transition-colors duration-300 focus:outline-none focus:border-olive-400 focus:ring-2 focus:ring-olive-400/30">
+                    <div class="flex flex-col gap-1">
+                        <label for="start-date" class="text-xs text-gray-500 dark:text-olive-200 font-semibold">Inicio</label>
+                        <input type="date" id="start-date" required
+                            class="w-full px-4 py-2 border border-olive-300 dark:border-olive-600 rounded bg-olive-50 dark:bg-olive-800 text-gray-800 dark:text-white text-sm transition-colors duration-300 focus:outline-none focus:border-olive-400 focus:ring-2 focus:ring-olive-400/30">
                     </div>
-                    <div class="date-group">
-                        <label for="end-date">Fin</label>
-                        <input type="date" id="end-date" required>
+                    <div class="flex flex-col gap-1">
+                        <label for="end-date" class="text-xs text-gray-500 dark:text-olive-200 font-semibold">Fin</label>
+                        <input type="date" id="end-date" required
+                            class="w-full px-4 py-2 border border-olive-300 dark:border-olive-600 rounded bg-olive-50 dark:bg-olive-800 text-gray-800 dark:text-white text-sm transition-colors duration-300 focus:outline-none focus:border-olive-400 focus:ring-2 focus:ring-olive-400/30">
                     </div>
-                    <button type="submit">Agregar</button>
+                    <button type="submit"
+                        class="bg-olive-400 hover:bg-olive-500 text-white py-2 px-4 rounded font-semibold mt-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-olive-400/50 hover:shadow-lg">
+                        Agregar
+                    </button>
                 </form>
             </section>
         </aside>
 
-        <main>
-            <section class="tasks-section">
-                <h2>Mis Tareas</h2>
-                <div class="tasks-filters">
+        <main class="flex-1 bg-olive-100 dark:bg-olive-700 p-6 rounded-lg min-w-0 transition-colors duration-300">
+            <section>
+                <h2 class="text-lg mb-4 text-olive-500 dark:text-olive-400 font-semibold">Mis Tareas</h2>
+                <div class="flex gap-2 mb-4 flex-wrap">
                     <button class="filter-btn active" data-filter="all">Todas</button>
                     <button class="filter-btn" data-filter="pendiente">Pendientes</button>
                     <button class="filter-btn" data-filter="en-proceso">En proceso</button>
                     <button class="filter-btn" data-filter="terminada">Terminadas</button>
                 </div>
-                <div id="tasks-list" class="tasks-list">
-                    <p class="empty-message">No hay tareas. Agrega una desde el formulario.</p>
+                <div id="tasks-list" class="flex flex-col gap-2">
+                    <p class="text-center text-gray-400 dark:text-olive-200 py-8 text-sm">No hay tareas. Agrega una desde el formulario.</p>
                 </div>
             </section>
 
-            <section class="calendar-section">
-                <h2>Calendario</h2>
-                <div class="calendario-container">
-                    <div class="calendario-header">
-                        <button id="prev-month" class="nav-btn">&lt;</button>
-                        <div class="calendario-title">
-                            <span id="month-name">Marzo</span>
-                            <span id="year-number">2026</span>
+            <section class="mt-6 pt-6 border-t border-olive-200 dark:border-olive-600 transition-colors duration-300">
+                <h2 class="text-lg mb-4 text-olive-500 dark:text-olive-400 font-semibold">Calendario</h2>
+                <div class="mt-2">
+                    <div class="flex justify-between items-center mb-4">
+                        <button id="prev-month" class="bg-olive-200 dark:bg-olive-800 border border-olive-300 dark:border-olive-600 rounded-full w-9 h-9 flex items-center justify-center transition-all duration-300 hover:bg-olive-400 hover:text-white hover:border-olive-400 focus:outline-none focus:ring-2 focus:ring-olive-400/50">&lt;</button>
+                        <div class="text-center flex flex-col">
+                            <span id="month-name" class="text-xl font-bold">Marzo</span>
+                            <span id="year-number" class="text-sm text-gray-500 dark:text-olive-200">2026</span>
                         </div>
-                        <button id="next-month" class="nav-btn">&gt;</button>
+                        <button id="next-month" class="bg-olive-200 dark:bg-olive-800 border border-olive-300 dark:border-olive-600 rounded-full w-9 h-9 flex items-center justify-center transition-all duration-300 hover:bg-olive-400 hover:text-white hover:border-olive-400 focus:outline-none focus:ring-2 focus:ring-olive-400/50">&gt;</button>
                     </div>
                     <div class="calendario-grid" id="calendario-grid">
                         <span class="day-name">Lun</span>

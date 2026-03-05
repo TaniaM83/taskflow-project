@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.filter-btn {
+    @apply px-4 py-1 border border-olive-300 dark:border-olive-600 rounded-full bg-olive-200 dark:bg-olive-800 text-olive-600 dark:text-olive-200 cursor-pointer text-sm transition-all duration-300;
+}
+
+.filter-btn:hover {
+    @apply border-olive-400 text-olive-500 dark:text-olive-400;
+}
+
+.filter-btn.active {
+    @apply bg-olive-400 text-white border-olive-400;
+}
+
+.calendario-grid {
+    @apply grid grid-cols-7 gap-1;
+}
+
+.day-name {
+    @apply font-semibold text-center text-olive-400 text-sm p-1;
+}
+
+.day {
+    @apply text-center rounded text-sm cursor-default relative pb-5 pt-1 transition-colors duration-300;
+}
+
+.day:hover:not(.day-disabled) {
+    @apply bg-olive-600 dark:bg-olive-600;
+}
+
+.day-disabled {
+    @apply text-olive-300 dark:text-olive-600;
+}
+
+.day.today {
+    @apply bg-olive-200 dark:bg-olive-600 font-bold;
+}
+
+.day .task-dots {
+    @apply flex justify-center gap-0.5 absolute bottom-1 left-0 right-0;
+}
+
+.day .task-dot {
+    @apply w-2 h-2 rounded-full border border-white/30;
+}
+
+.task-dot.dot-pendiente {
+    @apply bg-estado-pendiente;
+}
+
+.task-dot.dot-en-proceso {
+    @apply bg-estado-proceso;
+}
+
+.task-dot.dot-terminada {
+    @apply bg-estado-terminada-light;
+}
+
+@media (max-width: 480px) {
+    .day {
+        @apply text-xs pb-3 pt-0.5;
+    }
+
+    .day .task-dot {
+        @apply w-1 h-1;
+    }
+
+    .day-name {
+        @apply text-xs;
+    }
+}

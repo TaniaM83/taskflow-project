@@ -1,0 +1,24 @@
+{
+  "name": "taskflow-project",
+  "version": "1.0.0",
+  "description": "TaskFlow es una app web sencilla para organizar tus tareas del dia a dia. La idea es que puedas apuntar lo que tienes que hacer, ponerle fechas y ver de un vistazo en que estado esta cada cosa.",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tailwindcss -i src/input.css -o src/styles/style.css --minify",
+    "dev": "npx tailwindcss -i src/input.css -o src/styles/style.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TaniaM83/taskflow-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TaniaM83/taskflow-project/issues"
+  },
+  "homepage": "https://github.com/TaniaM83/taskflow-project#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  }
+}
