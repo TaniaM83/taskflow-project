@@ -5,6 +5,10 @@ function guardarTareas() {
     localStorage.setItem('tareas', JSON.stringify(tareas));
 }
 
+function obtenerTareasCompletadas(arrTareas) {
+    return arrTareas.filter(function(t) { return t.estado === 'terminada'; });
+}
+
 var mesActual = new Date().getMonth();
 var anioActual = new Date().getFullYear();
 var filtro = 'all';
@@ -74,18 +78,30 @@ function renderCalendario() {
 
     var celdas = offset + totalDias;
     var restantes = celdas % 7 === 0 ? 0 : 7 - (celdas % 7);
-    for (var j = 1; j <= restantes; j++) {
+    for (var j = 1; j <= restantes; j++) 
+    {
         grid.appendChild(crearDia(j, true));
     }
 }
 
-function crearDia(numero, deshabilitado) {
+const crearDia = (numero, deshabilitado) => 
+{
+    const div = document.createElement('div');
+    div.classList.add('day');
+    div.classList.toggle('day-disabled', !!deshabilitado);
+    div.textContent = numero;
+    return div;
+};
+/*antes de cursor
+function crearDia(numero, deshabilitado) 
+{
     var div = document.createElement('div');
     div.classList.add('day');
     if (deshabilitado) div.classList.add('day-disabled');
     div.textContent = numero;
     return div;
-}
+}*/
+
 
 function renderTareas() {
     var lista = document.getElementById('tasks-list');
