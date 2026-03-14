@@ -310,3 +310,99 @@ const crearDia = (numero, deshabilitado) => {
     div.textContent = numero;
     return div;
 };
+
+# Mejora de código 
+
+1. Sección de puntos del calendario (líneas 58–73)
+Sustituí el for manual por filter() y map() para obtener las tareas del día.
+Sustituí el for de creación de puntos por forEach().
+El código queda más declarativo y fácil de leer.
+
+2. renderTareas() (líneas 117–134)
+Reemplacé la concatenación con + por template literals (`).
+Sustituí el bucle for por map() para generar el HTML.
+El HTML es más legible y los datos se insertan con ${}.
+
+
+# Revisión y refactorización
+
+Partes mejorables detectadas:
+
+Duplicación: guardarTareas() + renderTareas() + renderCalendario() repetidos en varios manejadores.
+
+Responsabilidades mezcladas: Lógica de filtro dentro de renderTareas(); lógica de mes duplicada en prev/next.
+
+Código muerto: Bloque comentado de crearDia antiguo.
+
+Tema: Lógica de dark/light repartida y poco clara.
+
+Mantenibilidad: Fechas y navegación del calendario sin funciones reutilizables.
+Cinco (y más) refactorizaciones aplicadas
+
+1. refrescarUI()
+Nueva función que centraliza: guardarTareas() → renderTareas() → renderCalendario().
+Sustituye la tripleta en: cambio de estado del badge, borrado de tarea y envío del formulario.
+Ventaja: un solo punto de verdad para “guardar y refrescar”.
+
+2. obtenerTareasFiltradas()
+Devuelve tareas o el subconjunto según filtro ('all' o estado).
+renderTareas() solo pide las tareas filtradas y pinta; la lógica de filtrado queda separada y reutilizable.
+
+3. avanzarEstadoTarea(id) y eliminarTarea(id)
+Toda la lógica de “siguiente estado” y “borrar” sale del listener de tasks-list.
+El listener queda en: si es badge → avanzarEstadoTarea(id); si es delete → eliminarTarea(id).
+Ventaja: funciones testeables y manejador más legible. Además se usa estados.length en lugar de 3 fijo.
+
+4. formatearFechaISO(anio, mes, dia) y cambiarMes(delta)
+formatearFechaISO: centraliza el formato YYYY-MM-DD usado en el calendario.
+cambiarMes(delta): unifica prev/next en una sola función; los botones solo hacen cambiarMes(-1) y cambiarMes(1).
+En renderCalendario() se usa formatearFechaISO y una variable esHoy para clarificar la condición del día actual.
+
+5. Tema: obtenerTemaActual(), aplicarTema(tema), toggleTema()
+obtenerTemaActual(): devuelve 'dark' o 'light' según la clase en document.documentElement.
+aplicarTema(tema): pone/quita dark, guarda en localStorage y actualiza el icono.
+toggleTema(): alterna entre dark y light y llama a aplicarTema.
+Inicio: se lee localStorage y se aplica tema (y icono) con aplicarTema, sin lógica duplicada.
+
+6. Limpieza
+Eliminado el bloque comentado del crearDia antiguo.
+crearDia unificado como function crearDia(numero, deshabilitado) (mismo estilo que el resto del archivo).
+
+# Mejora del código 
+
+1. Estructura de archivos
+src/js/config.js – Constantes (meses, estados, límites, clases CSS)
+src/js/app.js – Toda la lógica de la app
+src/app.js – Eliminado (reemplazado por src/js/app.js)
+index.html – Carga config.js antes de app.js
+2. Nombres de variables
+Antes	Después
+tareas	tasks
+mesActual	currentMonth
+anioActual	currentYear
+filtro	activeFilter
+meses	MONTH_NAMES
+estados	TASK_STATES
+estadoTexto	STATE_LABELS
+badgeClases	STATE_BADGE_CLASSES
+borderClases	STATE_BORDER_CLASSES
+
+3. Validaciones del formulario
+Campos obligatorios – Nombre, inicio y fin
+Longitud máxima – 200 caracteres para el nombre (MAX_TASK_NAME_LENGTH)
+Rango de fechas – Máximo 365 días entre inicio y fin (MAX_TASK_DAYS_RANGE)
+Feedback en pantalla – Mensajes en #form-error en lugar de alert()
+
+4. Funciones simplificadas
+createTaskDots() – Crea puntos de tareas en el calendario
+buildTaskCardHTML() – Genera el HTML de cada tarjeta
+escapeHtml() – Evita XSS en nombres
+setActiveFilterButton() – Evita repetir querySelectorAll en filtros
+initTaskFormHandler(), initFilterButtons(), etc. – Init más modular
+
+5. JSDoc
+Se añadieron comentarios JSDoc en todas las funciones principales, incluyendo @param, @returns y @description cuando aplica.
+
+# Consultas
+
+1. ¿Puedes listar todos los archivos que hay en la raíz de este proyecto usando el servidor MCP?
