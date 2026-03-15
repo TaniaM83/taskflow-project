@@ -277,9 +277,26 @@ function escapeHtml(text) {
 }
 
 /**
+ * Renderiza la barra de estadísticas con el conteo de tareas por estado.
+ */
+function renderStats() {
+    var statsEl = document.getElementById('task-stats');
+    if (!statsEl) return;
+    var pending = filterTasksByStatus(tasks, 'pendiente').length;
+    var inProgress = filterTasksByStatus(tasks, 'en-proceso').length;
+    var done = filterTasksByStatus(tasks, 'terminada').length;
+    statsEl.innerHTML =
+        '<span class="px-2 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 font-semibold">Pendientes: ' + pending + '</span>' +
+        '<span class="px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-semibold">En proceso: ' + inProgress + '</span>' +
+        '<span class="px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 font-semibold">Terminadas: ' + done + '</span>' +
+        '<span class="px-2 py-1 rounded-full bg-gray-200 dark:bg-olive-600 text-gray-600 dark:text-white font-semibold">Total: ' + tasks.length + '</span>';
+}
+
+/**
  * Renderiza la lista de tareas según el filtro activo.
  */
 function renderTaskList() {
+    renderStats();
     var listEl = document.getElementById('tasks-list');
     var filtered = getFilteredTasks();
 
