@@ -9,6 +9,7 @@ var tasks = JSON.parse(localStorage.getItem('tareas') || '[]');
 var currentMonth = new Date().getMonth();
 var currentYear = new Date().getFullYear();
 var activeFilter = 'all';
+var searchQuery = '';
 var themeToggleButton = document.getElementById('theme-toggle');
 
 /* ----- Storage ----- */
@@ -32,12 +33,46 @@ function refreshUI() {
 /* ----- Filtrado ----- */
 
 /**
- * Devuelve las tareas según el filtro activo.
- * @returns {Object[]} Lista de tareas filtradas.
+ * Filtra un array de tareas por su campo estado.
+ * @param {Object[]} taskList - Array de objetos tarea.
+ * @param {string} status - Estado a filtrar ('pendiente', 'en-proceso', 'terminada').
+ * @returns {Object[]} Nuevo array con las tareas que coinciden con el estado.
+ * @example
+ * filterTasksByStatus(tasks, 'pendiente') // → [{id:1, estado:'pendiente'}, ...]
+ */
+function filterTasksByStatus(taskList, status) {
+    if (!Array.isArray(taskList)) return [];
+    return taskList.filter(function (t) { return t.estado === status; });
+}
+
+/**
+ * Ordena las tareas poniendo las urgentes primero.
+ * @param {Object[]} taskList - Lista de tareas a ordenar.
+ * @returns {Object[]} Nuevo array con urgentes al inicio.
+ */
+function sortTasksByUrgency(taskList) {
+    return taskList.slice().sort(function (a, b) {
+        var aScore = a.prioridad === 'urgente' ? 0 : 1;
+        var bScore = b.prioridad === 'urgente' ? 0 : 1;
+        return aScore - bScore;
+    });
+}
+
+/**
+ * Devuelve las tareas según el filtro activo, búsqueda y orden.
+ * @returns {Object[]} Lista de tareas filtradas y ordenadas.
  */
 function getFilteredTasks() {
-    if (activeFilter === 'all') return tasks;
-    return tasks.filter(function (t) { return t.estado === activeFilter; });
+    var filtered = activeFilter === 'all'
+        ? tasks.slice()
+        : filterTasksByStatus(tasks, activeFilter);
+    if (searchQuery) {
+        var q = searchQuery.toLowerCase();
+        filtered = filtered.filter(function (t) {
+            return t.nombre.toLowerCase().indexOf(q) !== -1;
+        });
+    }
+    return sortTasksByUrgency(filtered);
 }
 
 /**
@@ -213,9 +248,13 @@ function buildTaskCardHTML(task) {
     var isCompleted = task.estado === 'terminada';
     var opacityClass = isCompleted ? ' opacity-75' : '';
     var strikeClass = isCompleted ? ' line-through text-gray-400 dark:text-olive-200' : '';
+    var urgentBadge = task.prioridad === 'urgente'
+        ? '<span class="text-xs font-bold text-red-500 uppercase tracking-wide">⚡ Urgente</span>'
+        : '';
     return `
         <div class="flex justify-between items-center p-4 rounded-lg border-l-4 ${STATE_BORDER_CLASSES[task.estado]} bg-olive-50 dark:bg-olive-800 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg max-md:flex-col max-md:items-start max-md:gap-2${opacityClass}">
             <div class="flex flex-col gap-1 flex-1 min-w-0">
+                ${urgentBadge}
                 <span class="font-semibold text-sm transition-colors duration-300${strikeClass}">${escapeHtml(task.nombre)}</span>
                 <span class="text-xs text-gray-400 dark:text-olive-200">${task.inicio} / ${task.fin}</span>
             </div>
@@ -285,7 +324,8 @@ function addTask(taskData) {
         nombre: taskData.nombre,
         inicio: taskData.inicio,
         fin: taskData.fin,
-        estado: 'pendiente'
+        estado: 'pendiente',
+        prioridad: taskData.prioridad || 'normal'
     });
 }
 
@@ -363,7 +403,8 @@ function initTaskFormHandler() {
             return;
         }
 
-        addTask({ nombre: nombre, inicio: inicio, fin: fin });
+        var prioridad = document.getElementById('task-urgent').checked ? 'urgente' : 'normal';
+        addTask({ nombre: nombre, inicio: inicio, fin: fin, prioridad: prioridad });
         refreshUI();
         this.reset();
     });
@@ -390,6 +431,13 @@ function initThemeToggle() {
     }
 }
 
+function initSearchHandler() {
+    document.getElementById('search-input').addEventListener('input', function () {
+        searchQuery = this.value.trim();
+        renderTaskList();
+    });
+}
+
 /* ----- Inicio ----- */
 
 function init() {
@@ -401,6 +449,7 @@ function init() {
     initMonthNavigation();
     initFilterButtons();
     initThemeToggle();
+    initSearchHandler();
 
     renderCalendar();
     renderTaskList();

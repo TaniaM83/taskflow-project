@@ -34,6 +34,11 @@
                         <input type="date" id="end-date" required
                             class="w-full px-4 py-2 border border-olive-300 dark:border-olive-600 rounded bg-olive-50 dark:bg-olive-800 text-gray-800 dark:text-white text-sm transition-colors duration-300 focus:outline-none focus:border-olive-400 focus:ring-2 focus:ring-olive-400/30">
                     </div>
+                    <div class="flex items-center gap-2 mt-1">
+                        <input type="checkbox" id="task-urgent"
+                            class="w-4 h-4 accent-red-500 cursor-pointer">
+                        <label for="task-urgent" class="text-xs text-gray-500 dark:text-olive-200 cursor-pointer select-none">⚡ Marcar como urgente</label>
+                    </div>
                     <p id="form-error" class="text-sm text-estado-pendiente hidden" role="alert"></p>
                     <button type="submit"
                         class="bg-olive-400 hover:bg-olive-500 text-white py-2 px-4 rounded font-semibold mt-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-olive-400/50 hover:shadow-lg">
@@ -45,7 +50,9 @@
 
         <main class="flex-1 bg-olive-100 dark:bg-olive-700 p-6 rounded-lg min-w-0 transition-colors duration-300">
             <section>
-                <h2 class="text-lg mb-4 text-olive-500 dark:text-olive-400 font-semibold">Mis Tareas</h2>
+                <h2 class="text-lg mb-3 text-olive-500 dark:text-olive-400 font-semibold">Mis Tareas</h2>
+                <input type="text" id="search-input" placeholder="🔍 Buscar tarea..."
+                    class="w-full px-3 py-2 border border-olive-300 dark:border-olive-600 rounded bg-olive-50 dark:bg-olive-800 text-gray-800 dark:text-white text-sm transition-colors duration-300 focus:outline-none focus:border-olive-400 focus:ring-2 focus:ring-olive-400/30 mb-3">
                 <div class="flex gap-2 mb-4 flex-wrap">
                     <button class="filter-btn active" data-filter="all">Todas</button>
                     <button class="filter-btn" data-filter="pendiente">Pendientes</button>

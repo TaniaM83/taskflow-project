@@ -406,3 +406,117 @@ Se añadieron comentarios JSDoc en todas las funciones principales, incluyendo @
 # Consultas
 
 1. ¿Puedes listar todos los archivos que hay en la raíz de este proyecto usando el servidor MCP?
+He obtenido la información con el servidor MCP de GitLens (repository_get_file_content):
+
+Archivos en la raíz de taskflow-project (vía MCP)
+Tipo	Archivo
+Carpeta	.cursor
+Carpeta	node_modules
+Carpeta	src
+Archivo	.gitattributes
+Archivo	.gitignore
+Archivo	package-lock.json
+Archivo	package.json
+Archivo	README.md
+Archivo	tailwind.config.js
+Servidor usado: GitLens (GitKraken) con repository_get_file_content para varios archivos de la raíz del proyecto.
+
+Nota: El servidor MCP de GitHub (get_file_contents con path vacío para listar directorios) sigue devolviendo "Not Found" para este repositorio, probablemente porque es privado y el token no tiene acceso. GitLens sí puede leer archivos del repo porque estás autenticada con GitHub a través de GitKraken
+
+2. Busca dentro de la carpeta docsAi y dime cuál de los archivos Markdown es el más largo.
+Archivo Markdown más largo en docsAi
+El archivo más largo dentro de src/docsAi es:
+
+ai-comparison.md, con 451 líneas, muy por encima de:
+reflection.md (10 líneas)
+cursor-workflow.md (7 líneas)
+prompt-engineering.md (10 líneas)
+experiments.md (3 líneas)
+
+3. Lee el archivo package.json (o index.html) y hazme un resumen rápido de las dependencias o scripts que estoy usando.
+Resumen rápido de package.json
+Dependencias (devDependencies)
+
+tailwindcss ^3.4.19: framework de CSS utilitario que usas para generar src/styles/style.css a partir de src/input.css.
+Scripts de npm
+
+build:
+npx tailwindcss -i src/input.css -o src/styles/style.css --minify
+Genera la hoja de estilos final optimizada para producción.
+dev:
+npx tailwindcss -i src/input.css -o src/styles/style.css --watch
+Lanza Tailwind en modo “watch” para regenerar los estilos automáticamente mientras desarrollas.
+No hay otras dependencias de runtime; la app es HTML + JS vanilla con Tailwind solo en modo desarrollo/build.
+
+4. Revisa todos mis archivos de código y dime si en alguno dejé algún comentario de TODO o FIXME olvidado (Pregunta trampa jejeje)
+No he encontrado ningún comentario con TODO o FIXME en tus archivos de código (.js, .html, .css) ni en los Markdown.
+
+Lo único similar que aparece es en ai-comparison.md, donde escribes en texto:
+
+“Revisa todos mis archivos de código y dime si en alguno dejé algún comentario de TODO o FIXME olvidado.”
+Pero no es un comentario dentro del código, solo parte de la documentación.
+
+5. Analiza la estructura de mi proyecto y créame un archivo llamado estructura_proyecto.txt explicando brevemente para qué sirve cada carpeta.
+He creado el archivo estructura_proyecto.txt en la raíz del proyecto.
+
+En él resumo, de forma breve, para qué sirve cada carpeta y los archivos principales:
+
+Raíz: .cursor/, node_modules/, src/, package.json, package-lock.json, tailwind.config.js, README.md.
+.cursor/: configuración de Cursor y del servidor MCP de GitHub.
+src/: index.html, input.css, app.js, carpeta js/ (config y lógica principal), carpeta docsAi/ (todos tus documentos y apuntes de IA).
+
+
+# Paso a paso de la instalación
+
+Después de varios intentos y he conseguido replicar lo que he hecho con Cursor entender y comprender lo que habeís pedido y por qué, estos son los pasos. 
+Está dividido en tres partes:
+
+1. Primera parte
+Antes de empezar a toquetear en cursor Cursor, el sistema operativo debe tener acceso global a las herramientas, utilizando "ejecutar"  (Win + R) escribí el comando sysdm.cpl y pulsé Enter. 
+Esto te abre las Propiedades del Sistema, fuí a Opciones avanzadas y hice clic en el botón Variables de usuario, nueva y añadí como nombre de la variable GITHUB_PERSONAL_ACCESS_TOKEN y como valor ghp_tu_token_completo.
+
+2. Segunda Parte
+Ahora que Cursor tiene acceso seguro a la variable de entorno, vamos a levantar el servidor MCP oficial de GitHub. Esto permitirá a la IA leer Issues, hacer Pull Requests y buscar en el código de tus repositorios directamente desde el chat. Ctrl + Shift + J para abrir los ajustes de Cursor y despues ir a la sección MCP, clic en + Add Server. 
+Esta parte se me complicó un poco más, configurar el servidor para que se ejecute por línea de comandos utilizando la herramienta de Model Context Protocol:
+Name: GitHub-MCP, Type: command, Command: ```bash, npx -y @modelcontextprotocol/server-github
+Como configuré el token en sysdm.cpl en el paso anterior, npx detectará automáticamente la variable GITHUB_PERSONAL_ACCESS_TOKEN en mi sistema operativo y autenticará el servidor sin que tenga que poner el token en la interfaz de Cursor. El indicador de estado pasará a Connected (verde).
+
+3. Tercera y última parte
+Cursor en este momento se encarga de la generación de código potenciada por contexto externo, Git lleva el control de versiones por debajo, y GitKraken actúa como un auditor visual.
+El proceso de Auditoría y Stage Selectivo (con GitKraken), primero, hice clic en el nodo superior que aparece como [WIP] (Work In Progress) para ver los cambios recientes, despúes de eso me puse a revisar el Diff, para revisar que la IA de Cursor no se haya inventado nada. Hice Stage solo de las líneas o bloques específicos que solucionan el problema que le pedí.
+
+# Utilidad MCP
+
+- Pueden ser de utilidad en un segundo cerebro de cualquier empresa, usando por ejemplo el MCP de NotebookLM, vectorizando información y analizandola, brindando información contrastada y embebida en tiempo real.
+
+- En equipos de desarrollo, el MCP de GitHub permite a la IA leer issues abiertos, revisar pull requests pendientes o buscar en el historial de commits sin salir del editor. Esto elimina el cambio de contexto constante entre herramientas y acelera el ciclo de revisión de código.
+
+- En proyectos con documentación extensa (internas, wikis, Confluence), un servidor MCP conectado a esa base de conocimiento permite que la IA responda preguntas sobre procesos o arquitectura usando la documentación real de la empresa, no conocimiento genérico entrenado.
+
+- En pipelines de datos, MCP puede conectar la IA directamente a bases de datos o APIs internas para que genere consultas, valide esquemas o detecte anomalías sobre datos reales en lugar de ejemplos simulados.
+
+- En soporte al cliente, un MCP conectado al CRM o historial de tickets permite que la IA sugiera soluciones basadas en casos anteriores resueltos por el propio equipo, adaptando la respuesta al contexto específico del producto.
+
+- En startups o equipos pequeños, conectar MCP a herramientas como Notion o Linear permite que la IA tenga visibilidad del roadmap, tareas activas y decisiones tomadas, actuando como un asistente con memoria real del proyecto en lugar de responder en vacío.
+
+# Prompt engineering
+
+1. Prompt con rol definido
+Eres un desarrollador senior con 10 años de experiencia en Node.js. Revisa esta función de taskflow y dime qué problemas de rendimiento o mantenibilidad ves, siendo directo y técnico.
+
+2. Few-shot prompting (con ejemplos)
+Convierte estos nombres de funciones a camelCase siguiendo este patrón:
+- `get_user_data` → `getUserData`
+- `send_email_notification` → `sendEmailNotification`
+
+Ahora convierte: `validate_input_form`, `fetch_product_list`, `update_user_profile`
+
+3. Razonamiento paso a paso
+Necesito implementar un sistema para que las tareas urgentes aparezcan primero. Antes de escribir el código, explica paso a paso la lógica que vas a usar para ordenar el array y cómo manejarás el renderizado.
+
+4. Prompt con restricciones claras
+Refactoriza la función `filterTasksByStatus`. Restricciones: máximo 20 líneas, sin dependencias externas, mantén la misma firma, añade un comentario JSDoc.
+
+
+5. Prompt para generar código
+Eres un desarrollador senior en JavaScript. Escribe una función `filterTasksByStatus(tasks, status)` que filtre un array de tareas por su campo `status`. Usa ES6+, sin librerías externas, e incluye JSDoc.
