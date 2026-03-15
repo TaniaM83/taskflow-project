@@ -1,10 +1,3 @@
-/**
- * TaskFlow - Aplicación para organizar tareas con calendario.
- * @module app
- */
-
-/* ----- Estado de la aplicación ----- */
-
 var tasks = JSON.parse(localStorage.getItem('tareas') || '[]');
 var currentMonth = new Date().getMonth();
 var currentYear = new Date().getFullYear();
@@ -13,58 +6,30 @@ var searchQuery = '';
 var activeSortOrder = 'default';
 var themeToggleButton = document.getElementById('theme-toggle');
 
-/* ----- Storage ----- */
-
-/**
- * Guarda las tareas en localStorage.
- */
 function saveTasks() {
     localStorage.setItem('tareas', JSON.stringify(tasks));
 }
 
-/**
- * Persiste tareas y actualiza la interfaz (lista + calendario).
- */
 function refreshUI() {
     saveTasks();
     renderTaskList();
     renderCalendar();
 }
 
-/* ----- Filtrado ----- */
-
-/**
- * Filtra un array de tareas por su campo estado.
- * @param {Object[]} taskList - Array de objetos tarea.
- * @param {string} status - Estado a filtrar ('pendiente', 'en-proceso', 'terminada').
- * @returns {Object[]} Nuevo array con las tareas que coinciden con el estado.
- * @example
- * filterTasksByStatus(tasks, 'pendiente') // → [{id:1, estado:'pendiente'}, ...]
- */
 function filterTasksByStatus(taskList, status) {
     if (!Array.isArray(taskList)) return [];
     return taskList.filter(function (t) { return t.estado === status; });
 }
 
-/**
- * Aplica el criterio de ordenación activo a una lista de tareas.
- * @param {Object[]} taskList - Lista de tareas a ordenar.
- * @returns {Object[]} Nuevo array ordenado según activeSortOrder.
- */
 function applySortOrder(taskList) {
     var sorted = taskList.slice();
-    if (activeSortOrder === 'name-asc')   return sorted.sort(function (a, b) { return a.nombre.localeCompare(b.nombre); });
-    if (activeSortOrder === 'name-desc')  return sorted.sort(function (a, b) { return b.nombre.localeCompare(a.nombre); });
-    if (activeSortOrder === 'date-asc')   return sorted.sort(function (a, b) { return a.inicio.localeCompare(b.inicio); });
-    if (activeSortOrder === 'date-desc')  return sorted.sort(function (a, b) { return b.inicio.localeCompare(a.inicio); });
+    if (activeSortOrder === 'name-asc')  return sorted.sort(function (a, b) { return a.nombre.localeCompare(b.nombre); });
+    if (activeSortOrder === 'name-desc') return sorted.sort(function (a, b) { return b.nombre.localeCompare(a.nombre); });
+    if (activeSortOrder === 'date-asc')  return sorted.sort(function (a, b) { return a.inicio.localeCompare(b.inicio); });
+    if (activeSortOrder === 'date-desc') return sorted.sort(function (a, b) { return b.inicio.localeCompare(a.inicio); });
     return sorted;
 }
 
-/**
- * Ordena las tareas poniendo las urgentes primero.
- * @param {Object[]} taskList - Lista de tareas a ordenar.
- * @returns {Object[]} Nuevo array con urgentes al inicio.
- */
 function sortTasksByUrgency(taskList) {
     return taskList.slice().sort(function (a, b) {
         var aScore = a.prioridad === 'urgente' ? 0 : 1;
@@ -73,10 +38,6 @@ function sortTasksByUrgency(taskList) {
     });
 }
 
-/**
- * Devuelve las tareas según el filtro activo, búsqueda y orden.
- * @returns {Object[]} Lista de tareas filtradas y ordenadas.
- */
 function getFilteredTasks() {
     var filtered = activeFilter === 'all'
         ? tasks.slice()
@@ -91,32 +52,14 @@ function getFilteredTasks() {
     return applySortOrder(filtered);
 }
 
-/**
- * Devuelve las tareas completadas de un array.
- * @param {Object[]} taskList - Lista de tareas.
- * @returns {Object[]} Tareas con estado 'terminada'.
- */
 function getCompletedTasks(taskList) {
     return taskList.filter(function (t) { return t.estado === 'terminada'; });
 }
 
-/* ----- Utilidades de fecha ----- */
-
-/**
- * Formatea año, mes y día como YYYY-MM-DD.
- * @param {number} year - Año.
- * @param {number} month - Mes (0-11).
- * @param {number} day - Día del mes.
- * @returns {string} Fecha en formato ISO.
- */
 function formatDateISO(year, month, day) {
     return year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
 }
 
-/**
- * Navega al mes anterior o siguiente.
- * @param {number} delta - -1 para anterior, 1 para siguiente.
- */
 function changeMonth(delta) {
     currentMonth += delta;
     if (currentMonth < 0) { currentMonth = 11; currentYear--; }
@@ -124,15 +67,6 @@ function changeMonth(delta) {
     renderCalendar();
 }
 
-/* ----- Validación del formulario ----- */
-
-/**
- * Valida los datos del formulario de nueva tarea.
- * @param {string} name - Nombre de la tarea.
- * @param {string} startDate - Fecha de inicio (YYYY-MM-DD).
- * @param {string} endDate - Fecha de fin (YYYY-MM-DD).
- * @returns {{ valid: boolean, message?: string }} Resultado de la validación.
- */
 function validateTaskForm(name, startDate, endDate) {
     if (!name || !startDate || !endDate) {
         return { valid: false, message: 'Todos los campos son obligatorios.' };
@@ -152,10 +86,6 @@ function validateTaskForm(name, startDate, endDate) {
     return { valid: true };
 }
 
-/**
- * Muestra un mensaje de error en el formulario.
- * @param {string} message - Mensaje a mostrar.
- */
 function showFormError(message) {
     var el = document.getElementById('form-error');
     if (el) {
@@ -164,9 +94,6 @@ function showFormError(message) {
     }
 }
 
-/**
- * Oculta el mensaje de error del formulario.
- */
 function hideFormError() {
     var el = document.getElementById('form-error');
     if (el) {
@@ -175,14 +102,6 @@ function hideFormError() {
     }
 }
 
-/* ----- Calendario ----- */
-
-/**
- * Crea un elemento DOM para un día del calendario.
- * @param {number} dayNumber - Número del día.
- * @param {boolean} isDisabled - Si es día de otro mes.
- * @returns {HTMLDivElement} Elemento del día.
- */
 function createDayElement(dayNumber, isDisabled) {
     var div = document.createElement('div');
     div.classList.add('day');
@@ -191,11 +110,6 @@ function createDayElement(dayNumber, isDisabled) {
     return div;
 }
 
-/**
- * Crea los puntos indicadores de tareas para un día.
- * @param {string[]} estados - Estados de las tareas del día.
- * @returns {HTMLDivElement} Contenedor de puntos.
- */
 function createTaskDots(estados) {
     var container = document.createElement('div');
     container.classList.add('task-dots');
@@ -207,9 +121,6 @@ function createTaskDots(estados) {
     return container;
 }
 
-/**
- * Renderiza el calendario del mes actual.
- */
 function renderCalendar() {
     document.getElementById('month-name').textContent = MONTH_NAMES[currentMonth];
     document.getElementById('year-number').textContent = currentYear;
@@ -253,13 +164,12 @@ function renderCalendar() {
     }
 }
 
-/* ----- Lista de tareas ----- */
+function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
-/**
- * Genera el HTML de una tarjeta de tarea.
- * @param {Object} task - Objeto tarea.
- * @returns {string} HTML de la tarjeta.
- */
 function buildTaskCardHTML(task) {
     var isCompleted = task.estado === 'terminada';
     var opacityClass = isCompleted ? ' opacity-75' : '';
@@ -282,20 +192,6 @@ function buildTaskCardHTML(task) {
         </div>`;
 }
 
-/**
- * Escapa HTML para evitar XSS.
- * @param {string} text - Texto a escapar.
- * @returns {string} Texto seguro.
- */
-function escapeHtml(text) {
-    var div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-/**
- * Renderiza la barra de estadísticas con el conteo de tareas por estado.
- */
 function renderStats() {
     var statsEl = document.getElementById('task-stats');
     if (!statsEl) return;
@@ -309,9 +205,6 @@ function renderStats() {
         '<span class="px-2 py-1 rounded-full bg-gray-200 dark:bg-olive-600 text-gray-600 dark:text-white font-semibold">Total: ' + tasks.length + '</span>';
 }
 
-/**
- * Renderiza la lista de tareas según el filtro activo.
- */
 function renderTaskList() {
     renderStats();
     var listEl = document.getElementById('tasks-list');
@@ -325,12 +218,6 @@ function renderTaskList() {
     listEl.innerHTML = filtered.map(buildTaskCardHTML).join('');
 }
 
-/* ----- Operaciones CRUD ----- */
-
-/**
- * Avanza el estado de una tarea al siguiente en el ciclo.
- * @param {number} taskId - ID de la tarea.
- */
 function advanceTaskState(taskId) {
     var task = tasks.find(function (t) { return t.id === taskId; });
     if (!task) return;
@@ -339,11 +226,6 @@ function advanceTaskState(taskId) {
     refreshUI();
 }
 
-/**
- * Activa la edición inline del nombre de una tarea.
- * Reemplaza el span del nombre por un input. Enter guarda, Escape cancela.
- * @param {number} taskId - ID de la tarea a editar.
- */
 function startEditingTask(taskId) {
     var card = document.querySelector('[data-task-id="' + taskId + '"]');
     var task = tasks.find(function (t) { return t.id === taskId; });
@@ -381,19 +263,11 @@ function startEditingTask(taskId) {
     input.addEventListener('blur', save);
 }
 
-/**
- * Elimina una tarea por ID.
- * @param {number} taskId - ID de la tarea.
- */
 function deleteTask(taskId) {
     tasks = tasks.filter(function (t) { return t.id !== taskId; });
     refreshUI();
 }
 
-/**
- * Añade una nueva tarea.
- * @param {Object} taskData - { nombre, inicio, fin }.
- */
 function addTask(taskData) {
     tasks.push({
         id: Date.now(),
@@ -405,20 +279,10 @@ function addTask(taskData) {
     });
 }
 
-/* ----- Tema ----- */
-
-/**
- * Obtiene el tema actual (dark/light).
- * @returns {string} 'dark' o 'light'.
- */
 function getCurrentTheme() {
     return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
 }
 
-/**
- * Aplica un tema y actualiza el icono.
- * @param {string} theme - 'dark' o 'light'.
- */
 function applyTheme(theme) {
     document.documentElement.classList.toggle('dark', theme === 'dark');
     localStorage.setItem('theme', theme);
@@ -427,28 +291,17 @@ function applyTheme(theme) {
     }
 }
 
-/**
- * Alterna entre tema oscuro y claro.
- */
 function toggleTheme() {
     var next = getCurrentTheme() === 'dark' ? 'light' : 'dark';
     applyTheme(next);
 }
 
-/* ----- Filtros ----- */
-
-/**
- * Activa el botón de filtro seleccionado y desactiva el resto.
- * @param {HTMLElement} activeBtn - Botón que recibe la clase active.
- */
 function setActiveFilterButton(activeBtn) {
     document.querySelectorAll('.filter-btn').forEach(function (b) {
         b.classList.remove('active');
     });
     activeBtn.classList.add('active');
 }
-
-/* ----- Inicialización de eventos ----- */
 
 function initTaskListClickHandler() {
     document.getElementById('tasks-list').addEventListener('click', function (e) {
@@ -469,12 +322,9 @@ function initTaskFormHandler() {
         e.preventDefault();
         hideFormError();
 
-        var nameInput = document.getElementById('task-name');
-        var startInput = document.getElementById('start-date');
-        var endInput = document.getElementById('end-date');
-        var nombre = nameInput.value.trim();
-        var inicio = startInput.value;
-        var fin = endInput.value;
+        var nombre = document.getElementById('task-name').value.trim();
+        var inicio = document.getElementById('start-date').value;
+        var fin = document.getElementById('end-date').value;
 
         var validation = validateTaskForm(nombre, inicio, fin);
         if (!validation.valid) {
@@ -523,8 +373,6 @@ function initSortHandler() {
         renderTaskList();
     });
 }
-
-/* ----- Inicio ----- */
 
 function init() {
     var savedTheme = localStorage.getItem('theme');
