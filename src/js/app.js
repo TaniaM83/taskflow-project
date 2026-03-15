@@ -268,13 +268,14 @@ function buildTaskCardHTML(task) {
         ? '<span class="text-xs font-bold text-red-500 uppercase tracking-wide">⚡ Urgente</span>'
         : '';
     return `
-        <div class="flex justify-between items-center p-4 rounded-lg border-l-4 ${STATE_BORDER_CLASSES[task.estado]} bg-olive-50 dark:bg-olive-800 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg max-md:flex-col max-md:items-start max-md:gap-2${opacityClass}">
+        <div class="flex justify-between items-center p-4 rounded-lg border-l-4 ${STATE_BORDER_CLASSES[task.estado]} bg-olive-50 dark:bg-olive-800 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg max-md:flex-col max-md:items-start max-md:gap-2${opacityClass}" data-task-id="${task.id}">
             <div class="flex flex-col gap-1 flex-1 min-w-0">
                 ${urgentBadge}
-                <span class="font-semibold text-sm transition-colors duration-300${strikeClass}">${escapeHtml(task.nombre)}</span>
+                <span class="task-name font-semibold text-sm transition-colors duration-300${strikeClass}">${escapeHtml(task.nombre)}</span>
                 <span class="text-xs text-gray-400 dark:text-olive-200">${task.inicio} / ${task.fin}</span>
             </div>
             <div class="flex items-center gap-2 shrink-0 max-md:self-end">
+                <button class="edit-btn w-7 h-7 flex items-center justify-center rounded-full text-gray-400 dark:text-olive-200 transition-all duration-300 hover:bg-olive-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-olive-400/50" data-id="${task.id}" title="Editar nombre">✏️</button>
                 <span class="status-badge px-2 py-1 rounded-xl text-xs font-semibold text-white cursor-pointer transition-all duration-300 hover:scale-105 ${STATE_BADGE_CLASSES[task.estado]}" data-id="${task.id}">${STATE_LABELS[task.estado]}</span>
                 <button class="delete-btn w-7 h-7 flex items-center justify-center rounded-full text-gray-400 dark:text-olive-200 transition-all duration-300 hover:bg-estado-pendiente hover:text-white focus:outline-none focus:ring-2 focus:ring-estado-pendiente/50" data-id="${task.id}">&times;</button>
             </div>
@@ -336,6 +337,48 @@ function advanceTaskState(taskId) {
     var idx = TASK_STATES.indexOf(task.estado);
     task.estado = TASK_STATES[(idx + 1) % TASK_STATES.length];
     refreshUI();
+}
+
+/**
+ * Activa la edición inline del nombre de una tarea.
+ * Reemplaza el span del nombre por un input. Enter guarda, Escape cancela.
+ * @param {number} taskId - ID de la tarea a editar.
+ */
+function startEditingTask(taskId) {
+    var card = document.querySelector('[data-task-id="' + taskId + '"]');
+    var task = tasks.find(function (t) { return t.id === taskId; });
+    if (!card || !task) return;
+
+    var nameSpan = card.querySelector('.task-name');
+    if (!nameSpan) return;
+
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.value = task.nombre;
+    input.className = 'task-name font-semibold text-sm bg-transparent border-b-2 border-olive-400 focus:outline-none w-full text-gray-800 dark:text-white';
+    input.maxLength = MAX_TASK_NAME_LENGTH;
+
+    nameSpan.replaceWith(input);
+    input.focus();
+    input.select();
+
+    var saved = false;
+    function save() {
+        if (saved) return;
+        saved = true;
+        var newName = input.value.trim();
+        if (newName && newName !== task.nombre) {
+            task.nombre = newName;
+            saveTasks();
+        }
+        renderTaskList();
+    }
+
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); save(); }
+        if (e.key === 'Escape') { saved = true; renderTaskList(); }
+    });
+    input.addEventListener('blur', save);
 }
 
 /**
@@ -409,6 +452,9 @@ function setActiveFilterButton(activeBtn) {
 
 function initTaskListClickHandler() {
     document.getElementById('tasks-list').addEventListener('click', function (e) {
+        if (e.target.classList.contains('edit-btn')) {
+            startEditingTask(Number(e.target.dataset.id));
+        }
         if (e.target.classList.contains('status-badge')) {
             advanceTaskState(Number(e.target.dataset.id));
         }
