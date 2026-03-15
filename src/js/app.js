@@ -10,6 +10,7 @@ var currentMonth = new Date().getMonth();
 var currentYear = new Date().getFullYear();
 var activeFilter = 'all';
 var searchQuery = '';
+var activeSortOrder = 'default';
 var themeToggleButton = document.getElementById('theme-toggle');
 
 /* ----- Storage ----- */
@@ -46,6 +47,20 @@ function filterTasksByStatus(taskList, status) {
 }
 
 /**
+ * Aplica el criterio de ordenación activo a una lista de tareas.
+ * @param {Object[]} taskList - Lista de tareas a ordenar.
+ * @returns {Object[]} Nuevo array ordenado según activeSortOrder.
+ */
+function applySortOrder(taskList) {
+    var sorted = taskList.slice();
+    if (activeSortOrder === 'name-asc')   return sorted.sort(function (a, b) { return a.nombre.localeCompare(b.nombre); });
+    if (activeSortOrder === 'name-desc')  return sorted.sort(function (a, b) { return b.nombre.localeCompare(a.nombre); });
+    if (activeSortOrder === 'date-asc')   return sorted.sort(function (a, b) { return a.inicio.localeCompare(b.inicio); });
+    if (activeSortOrder === 'date-desc')  return sorted.sort(function (a, b) { return b.inicio.localeCompare(a.inicio); });
+    return sorted;
+}
+
+/**
  * Ordena las tareas poniendo las urgentes primero.
  * @param {Object[]} taskList - Lista de tareas a ordenar.
  * @returns {Object[]} Nuevo array con urgentes al inicio.
@@ -72,7 +87,8 @@ function getFilteredTasks() {
             return t.nombre.toLowerCase().indexOf(q) !== -1;
         });
     }
-    return sortTasksByUrgency(filtered);
+    if (activeSortOrder === 'default') return sortTasksByUrgency(filtered);
+    return applySortOrder(filtered);
 }
 
 /**
@@ -455,6 +471,13 @@ function initSearchHandler() {
     });
 }
 
+function initSortHandler() {
+    document.getElementById('sort-select').addEventListener('change', function () {
+        activeSortOrder = this.value;
+        renderTaskList();
+    });
+}
+
 /* ----- Inicio ----- */
 
 function init() {
@@ -467,6 +490,7 @@ function init() {
     initFilterButtons();
     initThemeToggle();
     initSearchHandler();
+    initSortHandler();
 
     renderCalendar();
     renderTaskList();
