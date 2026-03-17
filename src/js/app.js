@@ -266,6 +266,9 @@ function startEditingTask(taskId) {
 }
 
 function deleteTask(taskId) {
+    var task = tasks.find(function (t) { return t.id === taskId; });
+    if (!task) return;
+    if (!confirm('¿Borrar la tarea "' + task.nombre + '"?')) return;
     tasks = tasks.filter(function (t) { return t.id !== taskId; });
     refreshUI();
 }
