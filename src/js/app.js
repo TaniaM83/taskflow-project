@@ -309,7 +309,8 @@ function setActiveFilterButton(activeBtn) {
 }
 
 function initTaskListClickHandler() {
-    document.getElementById('tasks-list').addEventListener('click', function (e) {
+    var list = document.getElementById('tasks-list');
+    list.addEventListener('click', function (e) {
         if (e.target.classList.contains('edit-btn')) {
             startEditingTask(Number(e.target.dataset.id));
         }
@@ -318,6 +319,12 @@ function initTaskListClickHandler() {
         }
         if (e.target.classList.contains('delete-btn')) {
             deleteTask(Number(e.target.dataset.id));
+        }
+    });
+    list.addEventListener('dblclick', function (e) {
+        if (e.target.classList.contains('task-name')) {
+            var card = e.target.closest('[data-task-id]');
+            if (card) startEditingTask(Number(card.dataset.taskId));
         }
     });
 }
