@@ -1,0 +1,30 @@
+Raíz del proyecto
+------------------
+- .cursor/           -> Configuración específica de Cursor y MCP (por ejemplo, servidor MCP de GitHub).
+- node_modules/      -> Dependencias de Node instaladas por npm (TailwindCSS y sus paquetes internos).
+- src/               -> Código fuente de la aplicación web TaskFlow (HTML, CSS fuente y JavaScript).
+- package.json       -> Metadatos del proyecto y scripts npm (build/dev con TailwindCSS).
+- package-lock.json  -> Versión exacta de todas las dependencias instaladas.
+- tailwind.config.js -> Configuración de TailwindCSS (paleta de colores, modo oscuro, paths a escanear).
+- README.md          -> Descripción general del proyecto y cómo funciona.
+
+Carpeta .cursor/
+----------------
+- README.md          -> Instrucciones para configurar Cursor y el servidor MCP de GitHub.
+- mcp.json           -> Definición de servidores MCP que usa el proyecto (actualmente GitHub).
+
+Carpeta src/
+-----------
+- index.html         -> Estructura principal de la página TaskFlow (formulario, lista de tareas y calendario).
+- input.css          -> Archivo fuente de estilos con directivas de Tailwind y clases personalizadas.
+- app.js             -> Versión anterior/alternativa de la lógica JS (mantiene la lógica de tareas y calendario).
+- js/
+  - config.js        -> Constantes y configuración compartida (meses, estados de tarea, límites de validación).
+  - app.js           -> Lógica principal de la app: gestión de tareas, calendario, filtros y tema oscuro/claro.
+- docsAi/
+  - ai-comparison.md       -> Diario extenso comparando distintos modelos de IA y su uso en el proyecto.
+  - cursor-workflow.md     -> Notas sobre flujo de trabajo y atajos en Cursor.
+  - reflection.md          -> Reflexiones personales sobre el aprendizaje y el uso de Git/MCP.
+  - experiments.md         -> Espacio para anotar experimentos y pruebas con herramientas.
+  - prompt-engineering.md  -> Apuntes sobre cómo diseñar mejores prompts para la IA.
+

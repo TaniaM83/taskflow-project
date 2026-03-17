@@ -467,8 +467,6 @@ src/: index.html, input.css, app.js, carpeta js/ (config y lógica principal), c
 
 
 # Paso a paso de la instalación
-
-Después de varios intentos y he conseguido replicar lo que he hecho con Cursor entender y comprender lo que habeís pedido y por qué, estos son los pasos. 
 Está dividido en tres partes:
 
 1. Primera parte
@@ -503,6 +501,8 @@ El proceso de Auditoría y Stage Selectivo (con GitKraken), primero, hice clic e
 
 1. Prompt con rol definido
 Eres un desarrollador senior con 10 años de experiencia en Node.js. Revisa esta función de taskflow y dime qué problemas de rendimiento o mantenibilidad ves, siendo directo y técnico.
+- Respuesta:
+Veo tres problemas en esta función. Primero, está mezclando lógica de filtrado con lógica de renderizado, eso viola el principio de responsabilidad única. Segundo, estás haciendo innerHTML += dentro de un bucle, lo que fuerza un repintado del DOM en cada iteración. Tercero, no hay ningún guard para cuando tasks llega vacío. Lo separaría en dos funciones: una que filtra y otra que pinta, y usaría un documentFragment para hacer un solo insert al final.
 
 2. Few-shot prompting (con ejemplos)
 Convierte estos nombres de funciones a camelCase siguiendo este patrón:
@@ -520,3 +520,10 @@ Refactoriza la función `filterTasksByStatus`. Restricciones: máximo 20 líneas
 
 5. Prompt para generar código
 Eres un desarrollador senior en JavaScript. Escribe una función `filterTasksByStatus(tasks, status)` que filtre un array de tareas por su campo `status`. Usa ES6+, sin librerías externas, e incluye JSDoc.
+
+# Nuevas Funcionalidades con ayuda IA
+
+1. Búsqueda por texto — input filtra la lista en tiempo real mientras escribes
+2. Estadísticas — barra con conteo de pendientes / en proceso / terminadas / total	9add436
+3. Ordenación — selector para ordenar por nombre (A→Z, Z→A) o fecha (↑↓)
+4. Edición inline — botón ✏️ convierte el nombre en input editable; Enter guarda, Escape cancela

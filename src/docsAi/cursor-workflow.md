@@ -1,7 +1,10 @@
-# Flujo de Trabajo en Cursor
+# Comandos más usados
 
-Guía detallada sobre cómo optimizar el uso del IDE Cursor, atajos útiles y metodologías de desarrollo asistido.
+ctrl + L. Abre el chat lateral de IA
 
-ctrl + L
-ctrl + K
-ctrl + I
+ctrl + K. La IA modifica solo ese fragmento sin abrir el chat
+
+ctrl + I. Abre el modo Composer. 
+
+ctrl + z. Deshacer.
+
