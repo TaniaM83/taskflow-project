@@ -1,5 +1,6 @@
-
-var API_URL = 'http://localhost:3000/api/v1/tasks';
+var API_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:3000/api/v1/tasks'
+    : '/api/v1/tasks';
 
 function fetchTasks() {
     return fetch(API_URL)
