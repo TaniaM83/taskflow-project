@@ -6,15 +6,12 @@ function getTasks(req, res) {
 }
 
 function createTask(req, res) {
-  const { nombre, fechaInicio, fechaFin } = req.body;
+  const { nombre, inicio, fin } = req.body;
 
-  // compruebo que al menos venga el nombre
   if (!nombre) {
     return res.status(400).json({ error: 'El nombre es obligatorio' });
   }
-
-  // compruebo que vengan las fechas
-  if (!fechaInicio || !fechaFin) {
+  if (!inicio || !fin) {
     return res.status(400).json({ error: 'Las fechas de inicio y fin son obligatorias' });
   }
 
@@ -22,11 +19,22 @@ function createTask(req, res) {
   res.status(201).json(nueva);
 }
 
-function deleteTask(req, res) {
-  // el id viene como texto en la url, lo paso a numero
+function updateTask(req, res, next) {
   const id = Number(req.params.id);
+  if (isNaN(id)) {
+    return res.status(400).json({ error: 'El id tiene que ser un numero' });
+  }
 
-  // si no es un numero valido devuelvo error
+  try {
+    const actualizada = taskService.actualizarTarea(id, req.body);
+    res.json(actualizada);
+  } catch (error) {
+    next(error);
+  }
+}
+
+function deleteTask(req, res, next) {
+  const id = Number(req.params.id);
   if (isNaN(id)) {
     return res.status(400).json({ error: 'El id tiene que ser un numero' });
   }
@@ -35,11 +43,8 @@ function deleteTask(req, res) {
     taskService.eliminarTarea(id);
     res.status(204).send();
   } catch (error) {
-    if (error.message === 'NOT_FOUND') {
-      return res.status(404).json({ error: 'No encontre ninguna tarea con ese id' });
-    }
-    res.status(500).json({ error: 'Algo salio mal' });
+    next(error);
   }
 }
 
-module.exports = { getTasks, createTask, deleteTask };
+module.exports = { getTasks, createTask, updateTask, deleteTask };

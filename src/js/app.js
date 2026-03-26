@@ -1,4 +1,4 @@
-var tasks = JSON.parse(localStorage.getItem('tareas') || '[]');
+var tasks = [];
 var currentMonth = new Date().getMonth();
 var currentYear = new Date().getFullYear();
 var activeFilter = 'all';
@@ -6,12 +6,30 @@ var searchQuery = '';
 var activeSortOrder = 'default';
 var themeToggleButton = document.getElementById('theme-toggle');
 
-function saveTasks() {
-    localStorage.setItem('tareas', JSON.stringify(tasks));
+function showLoading() {
+    var listEl = document.getElementById('tasks-list');
+    listEl.innerHTML = '<p class="text-center text-gray-400 dark:text-olive-200 py-8 text-sm">Cargando tareas...</p>';
+}
+
+function showNetworkError(mensaje) {
+    var listEl = document.getElementById('tasks-list');
+    listEl.innerHTML = '<p class="text-center text-red-500 py-8 text-sm">' + escapeHtml(mensaje) + '</p>';
+}
+
+function loadTasksFromServer() {
+    showLoading();
+    fetchTasks()
+        .then(function (data) {
+            tasks = data;
+            renderTaskList();
+            renderCalendar();
+        })
+        .catch(function (err) {
+            showNetworkError('No se pudo conectar al servidor. Asegurate de que esta corriendo en localhost:3000');
+        });
 }
 
 function refreshUI() {
-    saveTasks();
     renderTaskList();
     renderCalendar();
 }
@@ -224,8 +242,16 @@ function advanceTaskState(taskId) {
     var task = tasks.find(function (t) { return t.id === taskId; });
     if (!task) return;
     var idx = TASK_STATES.indexOf(task.estado);
-    task.estado = TASK_STATES[(idx + 1) % TASK_STATES.length];
-    refreshUI();
+    var nuevoEstado = TASK_STATES[(idx + 1) % TASK_STATES.length];
+
+    updateTaskAPI(taskId, { estado: nuevoEstado })
+        .then(function (updated) {
+            task.estado = updated.estado;
+            refreshUI();
+        })
+        .catch(function (err) {
+            showNetworkError('Error al cambiar el estado');
+        });
 }
 
 function startEditingTask(taskId) {
@@ -252,10 +278,17 @@ function startEditingTask(taskId) {
         saved = true;
         var newName = input.value.trim();
         if (newName && newName !== task.nombre) {
-            task.nombre = newName;
-            saveTasks();
+            updateTaskAPI(taskId, { nombre: newName })
+                .then(function (updated) {
+                    task.nombre = updated.nombre;
+                    renderTaskList();
+                })
+                .catch(function (err) {
+                    showNetworkError('Error al editar la tarea');
+                });
+        } else {
+            renderTaskList();
         }
-        renderTaskList();
     }
 
     input.addEventListener('keydown', function (e) {
@@ -269,19 +302,26 @@ function deleteTask(taskId) {
     var task = tasks.find(function (t) { return t.id === taskId; });
     if (!task) return;
     if (!confirm('¿Borrar la tarea "' + task.nombre + '"?')) return;
-    tasks = tasks.filter(function (t) { return t.id !== taskId; });
-    refreshUI();
+
+    deleteTaskAPI(taskId)
+        .then(function () {
+            tasks = tasks.filter(function (t) { return t.id !== taskId; });
+            refreshUI();
+        })
+        .catch(function (err) {
+            showNetworkError('Error al borrar la tarea');
+        });
 }
 
 function addTask(taskData) {
-    tasks.push({
-        id: Date.now(),
-        nombre: taskData.nombre,
-        inicio: taskData.inicio,
-        fin: taskData.fin,
-        estado: 'pendiente',
-        prioridad: taskData.prioridad || 'normal'
-    });
+    createTaskAPI(taskData)
+        .then(function (nueva) {
+            tasks.push(nueva);
+            refreshUI();
+        })
+        .catch(function (err) {
+            showFormError(err.message || 'Error al crear la tarea');
+        });
 }
 
 function getCurrentTheme() {
@@ -346,7 +386,6 @@ function initTaskFormHandler() {
 
         var prioridad = document.getElementById('task-urgent').checked ? 'urgente' : 'normal';
         addTask({ nombre: nombre, inicio: inicio, fin: fin, prioridad: prioridad });
-        refreshUI();
         this.reset();
     });
 }
@@ -399,7 +438,8 @@ function init() {
     initSortHandler();
 
     renderCalendar();
-    renderTaskList();
+
+    loadTasksFromServer();
 }
 
 init();
