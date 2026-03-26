@@ -6,7 +6,8 @@ var searchQuery = '';
 var activeSortOrder = 'default';
 var themeToggleButton = document.getElementById('theme-toggle');
 
-function showLoading() {
+function showLoading() 
+{
     var listEl = document.getElementById('tasks-list');
     listEl.innerHTML = '<p class="text-center text-gray-400 dark:text-olive-200 py-8 text-sm">Cargando tareas...</p>';
 }
@@ -16,30 +17,36 @@ function showNetworkError(mensaje) {
     listEl.innerHTML = '<p class="text-center text-red-500 py-8 text-sm">' + escapeHtml(mensaje) + '</p>';
 }
 
-function loadTasksFromServer() {
+function loadTasksFromServer() 
+{
     showLoading();
     fetchTasks()
-        .then(function (data) {
+        .then(function (data) 
+        {
             tasks = data;
             renderTaskList();
             renderCalendar();
         })
-        .catch(function (err) {
+        .catch(function (err) 
+        {
             showNetworkError('No se pudo conectar al servidor. Asegurate de que esta corriendo en localhost:3000');
         });
 }
 
-function refreshUI() {
+function refreshUI() 
+{
     renderTaskList();
     renderCalendar();
 }
 
-function filterTasksByStatus(taskList, status) {
+function filterTasksByStatus(taskList, status) 
+{
     if (!Array.isArray(taskList)) return [];
     return taskList.filter(function (t) { return t.estado === status; });
 }
 
-function applySortOrder(taskList) {
+function applySortOrder(taskList) 
+{
     var sorted = taskList.slice();
     if (activeSortOrder === 'name-asc')  return sorted.sort(function (a, b) { return a.nombre.localeCompare(b.nombre); });
     if (activeSortOrder === 'name-desc') return sorted.sort(function (a, b) { return b.nombre.localeCompare(a.nombre); });
@@ -48,19 +55,23 @@ function applySortOrder(taskList) {
     return sorted;
 }
 
-function sortTasksByUrgency(taskList) {
-    return taskList.slice().sort(function (a, b) {
+function sortTasksByUrgency(taskList) 
+{
+    return taskList.slice().sort(function (a, b) 
+    {
         var aScore = a.prioridad === 'urgente' ? 0 : 1;
         var bScore = b.prioridad === 'urgente' ? 0 : 1;
         return aScore - bScore;
     });
 }
 
-function getFilteredTasks() {
+function getFilteredTasks() 
+{
     var filtered = activeFilter === 'all'
         ? tasks.slice()
         : filterTasksByStatus(tasks, activeFilter);
-    if (searchQuery) {
+    if (searchQuery) 
+        {
         var q = searchQuery.toLowerCase();
         filtered = filtered.filter(function (t) {
             return t.nombre.toLowerCase().indexOf(q) !== -1;
@@ -74,37 +85,45 @@ function getCompletedTasks(taskList) {
     return taskList.filter(function (t) { return t.estado === 'terminada'; });
 }
 
-function formatDateISO(year, month, day) {
+function formatDateISO(year, month, day) 
+{
     return year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
 }
 
-function changeMonth(delta) {
+function changeMonth(delta) 
+{
     currentMonth += delta;
     if (currentMonth < 0) { currentMonth = 11; currentYear--; }
     if (currentMonth > 11) { currentMonth = 0; currentYear++; }
     renderCalendar();
 }
 
-function validateTaskForm(name, startDate, endDate) {
-    if (!name || !startDate || !endDate) {
+function validateTaskForm(name, startDate, endDate) 
+{
+    if (!name || !startDate || !endDate) 
+    {
         return { valid: false, message: 'Todos los campos son obligatorios.' };
     }
-    if (name.length > MAX_TASK_NAME_LENGTH) {
+    if (name.length > MAX_TASK_NAME_LENGTH) 
+    {
         return { valid: false, message: 'El nombre no puede superar ' + MAX_TASK_NAME_LENGTH + ' caracteres.' };
     }
-    if (endDate < startDate) {
+    if (endDate < startDate) 
+    {
         return { valid: false, message: 'La fecha de fin debe ser igual o posterior a la de inicio.' };
     }
     var start = new Date(startDate);
     var end = new Date(endDate);
     var daysDiff = Math.floor((end - start) / (1000 * 60 * 60 * 24));
-    if (daysDiff > MAX_TASK_DAYS_RANGE) {
+    if (daysDiff > MAX_TASK_DAYS_RANGE) 
+    {
         return { valid: false, message: 'El rango de fechas no puede superar ' + MAX_TASK_DAYS_RANGE + ' días.' };
     }
     return { valid: true };
 }
 
-function showFormError(message) {
+function showFormError(message) 
+{
     var el = document.getElementById('form-error');
     if (el) {
         el.textContent = message;
@@ -112,7 +131,8 @@ function showFormError(message) {
     }
 }
 
-function hideFormError() {
+function hideFormError() 
+{
     var el = document.getElementById('form-error');
     if (el) {
         el.textContent = '';
@@ -120,7 +140,8 @@ function hideFormError() {
     }
 }
 
-function createDayElement(dayNumber, isDisabled) {
+function createDayElement(dayNumber, isDisabled) 
+{
     var div = document.createElement('div');
     div.classList.add('day');
     div.classList.toggle('day-disabled', !!isDisabled);
@@ -128,7 +149,8 @@ function createDayElement(dayNumber, isDisabled) {
     return div;
 }
 
-function createTaskDots(estados) {
+function createTaskDots(estados) 
+{
     var container = document.createElement('div');
     container.classList.add('task-dots');
     estados.forEach(function (estado) {
@@ -139,7 +161,8 @@ function createTaskDots(estados) {
     return container;
 }
 
-function renderCalendar() {
+function renderCalendar() 
+{
     document.getElementById('month-name').textContent = MONTH_NAMES[currentMonth];
     document.getElementById('year-number').textContent = currentYear;
 
@@ -150,14 +173,16 @@ function renderCalendar() {
     var offset = firstWeekday === 0 ? 6 : firstWeekday - 1;
     var prevMonthDays = new Date(currentYear, currentMonth, 0).getDate();
 
-    for (var i = offset - 1; i >= 0; i--) {
+    for (var i = offset - 1; i >= 0; i--) 
+    {
         grid.appendChild(createDayElement(prevMonthDays - i, true));
     }
 
     var totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
     var today = new Date();
 
-    for (var d = 1; d <= totalDays; d++) {
+    for (var d = 1; d <= totalDays; d++) 
+    {
         var cell = createDayElement(d, false);
         var dateStr = formatDateISO(currentYear, currentMonth, d);
         var isToday = d === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
@@ -168,7 +193,8 @@ function renderCalendar() {
             .filter(function (t) { return dateStr >= t.inicio && dateStr <= t.fin; })
             .map(function (t) { return t.estado; });
 
-        if (taskStatesOnDay.length > 0) {
+        if (taskStatesOnDay.length > 0) 
+        {
             cell.appendChild(createTaskDots(taskStatesOnDay));
         }
 
@@ -177,7 +203,8 @@ function renderCalendar() {
 
     var totalCells = offset + totalDays;
     var remainingCells = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
-    for (var j = 1; j <= remainingCells; j++) {
+    for (var j = 1; j <= remainingCells; j++) 
+    {
         grid.appendChild(createDayElement(j, true));
     }
 }
@@ -188,7 +215,8 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function buildTaskCardHTML(task) {
+function buildTaskCardHTML(task) 
+{
     var isCompleted = task.estado === 'terminada';
     var opacityClass = isCompleted ? ' opacity-75' : '';
     var strikeClass = isCompleted ? ' line-through text-gray-400 dark:text-olive-200' : '';
@@ -210,7 +238,8 @@ function buildTaskCardHTML(task) {
         </div>`;
 }
 
-function renderStats() {
+function renderStats() 
+{
     var statsEl = document.getElementById('task-stats');
     if (!statsEl) return;
     var pending = filterTasksByStatus(tasks, 'pendiente').length;
@@ -225,12 +254,14 @@ function renderStats() {
         '<span class="px-2 py-1 rounded-full bg-gray-200 dark:bg-olive-600 text-gray-600 dark:text-white font-semibold">Total: ' + tasks.length + '</span>';
 }
 
-function renderTaskList() {
+function renderTaskList() 
+{
     renderStats();
     var listEl = document.getElementById('tasks-list');
     var filtered = getFilteredTasks();
 
-    if (filtered.length === 0) {
+    if (filtered.length === 0)
+    {
         listEl.innerHTML = '<p class="text-center text-gray-400 dark:text-olive-200 py-8 text-sm">No hay tareas.</p>';
         return;
     }
@@ -238,23 +269,27 @@ function renderTaskList() {
     listEl.innerHTML = filtered.map(buildTaskCardHTML).join('');
 }
 
-function advanceTaskState(taskId) {
+function advanceTaskState(taskId) 
+{
     var task = tasks.find(function (t) { return t.id === taskId; });
     if (!task) return;
     var idx = TASK_STATES.indexOf(task.estado);
     var nuevoEstado = TASK_STATES[(idx + 1) % TASK_STATES.length];
 
     updateTaskAPI(taskId, { estado: nuevoEstado })
-        .then(function (updated) {
+        .then(function (updated) 
+        {
             task.estado = updated.estado;
             refreshUI();
         })
-        .catch(function (err) {
+        .catch(function (err) 
+        {
             showNetworkError('Error al cambiar el estado');
         });
 }
 
-function startEditingTask(taskId) {
+function startEditingTask(taskId) 
+{
     var card = document.querySelector('[data-task-id="' + taskId + '"]');
     var task = tasks.find(function (t) { return t.id === taskId; });
     if (!card || !task) return;
@@ -273,76 +308,93 @@ function startEditingTask(taskId) {
     input.select();
 
     var saved = false;
-    function save() {
+    function save() 
+    {
         if (saved) return;
         saved = true;
         var newName = input.value.trim();
         if (newName && newName !== task.nombre) {
             updateTaskAPI(taskId, { nombre: newName })
-                .then(function (updated) {
+                .then(function (updated) 
+                {
                     task.nombre = updated.nombre;
                     renderTaskList();
                 })
-                .catch(function (err) {
+                .catch(function (err) 
+                {
                     showNetworkError('Error al editar la tarea');
                 });
-        } else {
+        } 
+        else 
+        {
             renderTaskList();
         }
     }
 
-    input.addEventListener('keydown', function (e) {
+    input.addEventListener('keydown', function (e) 
+    {
         if (e.key === 'Enter') { e.preventDefault(); save(); }
         if (e.key === 'Escape') { saved = true; renderTaskList(); }
     });
     input.addEventListener('blur', save);
 }
 
-function deleteTask(taskId) {
+function deleteTask(taskId) 
+{
     var task = tasks.find(function (t) { return t.id === taskId; });
     if (!task) return;
     if (!confirm('¿Borrar la tarea "' + task.nombre + '"?')) return;
 
     deleteTaskAPI(taskId)
-        .then(function () {
+        .then(function () 
+        {
             tasks = tasks.filter(function (t) { return t.id !== taskId; });
             refreshUI();
         })
-        .catch(function (err) {
+        .catch(function (err) 
+        {
             showNetworkError('Error al borrar la tarea');
         });
 }
 
-function addTask(taskData) {
+function addTask(taskData) 
+{
     createTaskAPI(taskData)
-        .then(function (nueva) {
+        .then(function (nueva) 
+        {
             tasks.push(nueva);
             refreshUI();
         })
-        .catch(function (err) {
+        .catch(function (err) 
+        {
             showFormError(err.message || 'Error al crear la tarea');
         });
 }
 
-function getCurrentTheme() {
+function getCurrentTheme() 
+{
     return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
 }
 
-function applyTheme(theme) {
+function applyTheme(theme) 
+{
     document.documentElement.classList.toggle('dark', theme === 'dark');
     localStorage.setItem('theme', theme);
-    if (themeToggleButton) {
+    if (themeToggleButton) 
+    {
         themeToggleButton.textContent = theme === 'dark' ? '🌕' : '🌑';
     }
 }
 
-function toggleTheme() {
+function toggleTheme() 
+{
     var next = getCurrentTheme() === 'dark' ? 'light' : 'dark';
     applyTheme(next);
 }
 
 function setActiveFilterButton(activeBtn) {
-    document.querySelectorAll('.filter-btn').forEach(function (b) {
+    document.querySelectorAll('.filter-btn').forEach(function (b) 
+    {
         b.classList.remove('active');
     });
     activeBtn.classList.add('active');
@@ -351,26 +403,32 @@ function setActiveFilterButton(activeBtn) {
 function initTaskListClickHandler() {
     var list = document.getElementById('tasks-list');
     list.addEventListener('click', function (e) {
-        if (e.target.classList.contains('edit-btn')) {
+        if (e.target.classList.contains('edit-btn')) 
+            {
             startEditingTask(Number(e.target.dataset.id));
         }
-        if (e.target.classList.contains('status-badge')) {
+        if (e.target.classList.contains('status-badge')) 
+            {
             advanceTaskState(Number(e.target.dataset.id));
         }
-        if (e.target.classList.contains('delete-btn')) {
+        if (e.target.classList.contains('delete-btn')) 
+            {
             deleteTask(Number(e.target.dataset.id));
         }
     });
     list.addEventListener('dblclick', function (e) {
-        if (e.target.classList.contains('task-name')) {
+        if (e.target.classList.contains('task-name'))
+        {
             var card = e.target.closest('[data-task-id]');
             if (card) startEditingTask(Number(card.dataset.taskId));
         }
     });
 }
 
-function initTaskFormHandler() {
-    document.getElementById('task-form').addEventListener('submit', function (e) {
+function initTaskFormHandler() 
+{
+    document.getElementById('task-form').addEventListener('submit', function (e) 
+    {
         e.preventDefault();
         hideFormError();
 
@@ -379,7 +437,8 @@ function initTaskFormHandler() {
         var fin = document.getElementById('end-date').value;
 
         var validation = validateTaskForm(nombre, inicio, fin);
-        if (!validation.valid) {
+        if (!validation.valid) 
+        {
             showFormError(validation.message);
             return;
         }
@@ -390,14 +449,18 @@ function initTaskFormHandler() {
     });
 }
 
-function initMonthNavigation() {
+function initMonthNavigation() 
+{
     document.getElementById('prev-month').addEventListener('click', function () { changeMonth(-1); });
     document.getElementById('next-month').addEventListener('click', function () { changeMonth(1); });
 }
 
-function initFilterButtons() {
-    document.querySelectorAll('.filter-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
+function initFilterButtons() 
+{
+    document.querySelectorAll('.filter-btn').forEach(function (btn) 
+    {
+        btn.addEventListener('click', function () 
+        {
             setActiveFilterButton(this);
             activeFilter = this.dataset.filter;
             renderTaskList();
@@ -405,27 +468,33 @@ function initFilterButtons() {
     });
 }
 
-function initThemeToggle() {
-    if (themeToggleButton) {
+function initThemeToggle() 
+{
+    if (themeToggleButton) 
+    {
         themeToggleButton.addEventListener('click', toggleTheme);
     }
 }
 
-function initSearchHandler() {
-    document.getElementById('search-input').addEventListener('input', function () {
+function initSearchHandler() 
+{
+    document.getElementById('search-input').addEventListener('input', function () 
+    {
         searchQuery = this.value.trim();
         renderTaskList();
     });
 }
 
 function initSortHandler() {
-    document.getElementById('sort-select').addEventListener('change', function () {
+    document.getElementById('sort-select').addEventListener('change', function () 
+    {
         activeSortOrder = this.value;
         renderTaskList();
     });
 }
 
-function init() {
+function init() 
+{
     var savedTheme = localStorage.getItem('theme');
     applyTheme(savedTheme === 'light' ? 'light' : 'dark');
 
