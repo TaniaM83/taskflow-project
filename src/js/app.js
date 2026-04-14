@@ -17,24 +17,20 @@ function showNetworkError(mensaje) {
     listEl.innerHTML = '<p class="text-center text-red-500 py-8 text-sm">' + escapeHtml(mensaje) + '</p>';
 }
 
-function loadTasksFromServer() 
-{
+function loadTasksFromServer() {
     showLoading();
     fetchTasks()
-        .then(function (data) 
-        {
+        .then(function (data) {
             tasks = data;
             renderTaskList();
             renderCalendar();
         })
-        .catch(function (err) 
-        {
+        .catch(function () {
             showNetworkError('No se pudo conectar al servidor. Asegurate de que esta corriendo en localhost:3000');
         });
 }
 
-function refreshUI() 
-{
+function refreshUI() {
     renderTaskList();
     renderCalendar();
 }
