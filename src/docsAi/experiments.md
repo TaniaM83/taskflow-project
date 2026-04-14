@@ -59,10 +59,8 @@ Problemas que tuve: al principio empecé el bucle al revés y me lié con los í
 
 Solución con IA (prompt: "Invierte un array en JS sin usar reverse(), de varias formas posibles"):
 
-// Opción 1: con reduce
 const invertirArray = arr => arr.reduce((acc, val) => [val, ...acc], []);
 
-// Opción 2: con índices desde el final
 const invertirArray2 = arr => arr.map((_, i) => arr[arr.length - 1 - i]);
 
 Diferencias:

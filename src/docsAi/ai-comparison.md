@@ -68,12 +68,10 @@
 
 
         Corrección de Claude,
-            // ✅ Opción 1: añadir return
             const calcularArea = (base, altura) => 
             {
             return base * altura;
             }
-            // ✅ Opción 2: retorno implícito (más conciso)
             const calcularArea = (base, altura) => base * altura;
 
         Corrección de ChatGPT,
@@ -124,18 +122,15 @@
         Claude: 
             function formatearPrecio(numero, moneda = 'USD') 
             {
-                // Validación: verificar que sea un número válido
                 if (typeof numero !== 'number' || isNaN(numero)) 
                 {
                     return 'Error: el precio debe ser un número válido.';
                 }
-                // Mapa de monedas y sus símbolos
                 const monedas = 
                 {
                     USD: '$',
                     EUR: '€',
                 };
-                // Validación: verificar que la moneda sea compatible
                 if (!monedas[moneda]) 
                 {
                     return `Error: moneda no reconocida. Usa 'USD' o 'EUR'.`;
@@ -165,12 +160,10 @@
         Claude:
             function buscarProductos(productos, textoBusqueda) 
             {
-                // Validación: verificar que productos sea un array
                     if (!Array.isArray(productos)) 
                     {
                         return 'Error: el primer argumento debe ser un array.';
                     }
-                // Validación: verificar que textoBusqueda sea un string
                 if (typeof textoBusqueda !== 'string') 
                 {
                     return 'Error: el texto de búsqueda debe ser un string.';
@@ -200,24 +193,22 @@
 
             function obtenerIniciales(nombreCompleto) 
             {
-                // Validación: verificar que sea un string
                 if (typeof nombreCompleto !== 'string') 
                 {
                     return 'Error: el nombre debe ser un string.';
                 }
-                // Validación: verificar que no esté vacío tras limpiar espacios
                 if (nombreCompleto.trim() === '') 
                 {
                     return 'Error: el nombre no puede estar vacío.';
                 }
 
                 return nombreCompleto
-                .trim()                          // elimina espacios al inicio y al final
-                .split(' ')                      // separa por espacios → ['juan', 'pablo', 'pérez']
-                .filter(palabra => palabra)      // elimina espacios extra entre palabras
-                .map(palabra => palabra[0].toUpperCase()) // toma la primera letra en mayúscula
-                .join('.');                      // une con puntos → 'J.P.P'
-                + '.';                           // añade el punto final
+                .trim()
+                .split(' ')
+                .filter(palabra => palabra)
+                .map(palabra => palabra[0].toUpperCase())
+                .join('.');
+                + '.';
             }
 
         Chatgpt
